@@ -3,6 +3,7 @@ from django.db import models
 from kasaparty.models.clientes import Cliente
 from kasaparty.models.productos import Producto
 
+
 class Cotizacion(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     productos = models.ManyToManyField(Producto)

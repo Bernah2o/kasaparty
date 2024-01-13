@@ -7,7 +7,7 @@ class Mpago(models.Model):
 
     def __str__(self):
         return self.nombre
-    
+
     def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()  # Convierte el nombre a mayúsculas
         super(Mpago, self).save(*args, **kwargs)

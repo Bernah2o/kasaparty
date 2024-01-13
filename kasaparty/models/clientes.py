@@ -6,12 +6,11 @@ class Cliente(models.Model):
         ("CEDULA", "Cédula"),
         ("NIT", "NIT"),
     ]
-
+    tipo_documento = models.CharField(max_length=10, choices=TIPO_DOCUMENTO_CHOICES)
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
+    direccion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=20)
-    direccion = models.TextField()
-    tipo_documento = models.CharField(max_length=10, choices=TIPO_DOCUMENTO_CHOICES)
     fecha_cumpleanos = models.DateField()
     correo = models.EmailField()
 
@@ -22,4 +21,3 @@ class Cliente(models.Model):
         self.nombre = self.nombre.upper()
         self.apellido = self.apellido.upper()
         self.direccion = self.direccion.upper()
-        self.correo = self.correo.upper()

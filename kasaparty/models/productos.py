@@ -1,9 +1,10 @@
 from django.db import models
 
+
 class Producto(models.Model):
     TIPO_CHOICES = [
-        ('DESAYUNO', 'Desayuno'),
-        ('BOUQUET', 'Bouquet de Globos'),
+        ("DESAYUNO", "Desayuno"),
+        ("BOUQUET", "Bouquet de Globos"),
     ]
 
     nombre = models.CharField(max_length=100)

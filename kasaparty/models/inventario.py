@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Inventario(models.Model):
     nombre_producto = models.CharField(max_length=100)
     descripcion = models.TextField()
