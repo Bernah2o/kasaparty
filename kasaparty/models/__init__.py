@@ -1,6 +1,6 @@
 from .clientes import Cliente
 from .cotizacion import Cotizacion
-from .decoracion import Decoracion
+from .tematicas import Tematica
 from .evento import Evento
 from .inventario import Inventario
 from .mpago import Mpago
@@ -8,3 +8,6 @@ from .productos import Producto
 from .reserva import Reserva
 from .componente import Componente
 from .detalleProducto import DetalleProducto
+from .proveedor import Proveedor
+from .inventarioProveedor import InventarioProveedor
+from .signals import *

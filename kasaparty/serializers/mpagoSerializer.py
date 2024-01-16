@@ -4,4 +4,4 @@ from kasaparty.models.mpago import Mpago
 class MpagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mpago
-        fields = ['id_mpago', 'nombre']
+        fields = "__all__"
