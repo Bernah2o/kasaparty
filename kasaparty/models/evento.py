@@ -1,8 +1,8 @@
 from django.db import models
 
 from kasaparty.models.clientes import Cliente
-from kasaparty.models.tematicas import Tematica
-from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Evento(models.Model):
@@ -10,16 +10,28 @@ class Evento(models.Model):
     fecha = models.DateField()
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True)
-    tematica = models.ManyToManyField(Tematica)
-    inventario = models.ForeignKey("kasaparty.Inventario", on_delete=models.CASCADE)
-    inventario_proveedor = models.ForeignKey(
-        "kasaparty.InventarioProveedor", on_delete=models.CASCADE
+    tematica = models.ForeignKey(
+        "kasaparty.Tematica", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    inventario_propio = models.OneToOneField(
+        "kasaparty.InventarioPropio",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="evento_inventario_propio",
+    )
+    inventario_proveedor = models.OneToOneField(
+        "kasaparty.InventarioProveedor",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="evento_inventario_proveedor",
     )
     estado = models.CharField(
         max_length=10,
         choices=[("en_curso", "En Curso"), ("terminado", "Terminado")],
         default="en_curso",
-        editable=True,
+        editable=False,
         blank=True,
     )
 
@@ -30,18 +42,23 @@ class Evento(models.Model):
         self.nombre = self.nombre.upper()
 
     def save(self, *args, **kwargs):
-        self.convertir_a_mayusculas()  # Llamar a la función antes de guardar
+        # Guardar primero el objeto Evento
         super().save(*args, **kwargs)
+        self.convertir_a_mayusculas()
 
-    def save(self, *args, **kwargs):
-        # Verificar si el producto del inventario ya está asignado a otro evento
-        if (
-            self.inventario
-            and self.inventario.asignado
-            and self.inventario.evento_alquilado != self
-        ):
-            raise ValidationError(
-                "El producto del inventario ya está asignado a otro evento."
-            )
+        # Verificar si el evento está terminado antes de asignar inventarios
+        if self.estado != "terminado":
+            if self.inventario_propio:
+                self.inventario_propio.evento_alquilado = self
+                self.inventario_propio.save()
 
-        super().save(*args, **kwargs)
+            if self.inventario_proveedor:
+                self.inventario_proveedor.evento_alquilado = self
+                self.inventario_proveedor.save()
+
+        if self.tematica:
+            self.tematica.evento = self
+            self.tematica.save()
+
+    class Meta:
+        verbose_name_plural = "Eventos"

@@ -1,6 +1,24 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.humanize.templatetags.humanize import intcomma
+from kasaparty.models.inventarioBase import (
+    InventarioBase,
+    InventarioPropio,
+    InventarioProveedor,
+)
+
+from .models import (
+    Cliente,
+    Cotizacion,
+    Tematica,
+    Evento,
+    Mpago,
+    Producto,
+    Reserva,
+    Componente,
+    DetalleProducto,
+    Proveedor,
+)
 
 
 class ClienteAdmin(admin.ModelAdmin):
@@ -40,33 +58,44 @@ class EventoAdmin(admin.ModelAdmin):
     mostrar_estado.short_description = "Estado"
 
 
-class InventarioAdmin(admin.ModelAdmin):
+class InventarioBaseAdmin(admin.ModelAdmin):
     list_display = [
         "nombre_producto",
-        "cantidad",
-        "asignado",
-        "precio",
         "fecha_ingreso",
         "evento_alquilado",
+        "precio",
+        "cantidad",
+        "asignado"
     ]
-    
-    
+    list_filter = ["asignado", "evento_alquilado"]
+    search_fields = ["nombre_producto"]
+
     def precio(self, obj):
         # Utilizamos intcomma para formatear el número con punto de mil
         return intcomma(obj.precio_unitario)
 
-    precio.short_description = 'Precio'
+    precio.short_description = "Precio"
 
 
-class InventarioProveedorAdmin(admin.ModelAdmin):
-    list_display = ["proveedor", "nombre_producto", "cantidad", "precio"]
-    
-    def precio(self, obj):
-        # Utilizamos intcomma para formatear el número con punto de mil
-        return intcomma(obj.precio_unitario)
+class InventarioPropioAdmin(InventarioBaseAdmin):
+    list_display = InventarioBaseAdmin.list_display + []
 
-    precio.short_description = 'Precio'
-
+class InventarioProveedorAdmin(InventarioBaseAdmin):
+    list_display = InventarioBaseAdmin.list_display + []
 
 class ProveedorAdmin(admin.ModelAdmin):
     list_display = ["nombre", "apellido", "telefono", "nombre_cuenta", "numero_cuenta"]
+
+
+admin.site.register(Cliente, ClienteAdmin)
+admin.site.register(Cotizacion)
+admin.site.register(Tematica)
+admin.site.register(Mpago)
+admin.site.register(Producto)
+admin.site.register(Reserva)
+admin.site.register(Componente)
+admin.site.register(DetalleProducto)
+admin.site.register(Proveedor, ProveedorAdmin)
+admin.site.register(Evento, EventoAdmin)
+admin.site.register(InventarioPropio, InventarioPropioAdmin)
+admin.site.register(InventarioProveedor, InventarioProveedorAdmin)

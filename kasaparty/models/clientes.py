@@ -6,7 +6,9 @@ class Cliente(models.Model):
         ("CEDULA", "Cedula"),
         ("NIT", "NIT"),
     ]
-    tipo_documento = models.CharField(max_length=10, choices=TIPO_DOCUMENTO_CHOICES, default="Cedula")
+    tipo_documento = models.CharField(
+        max_length=10, choices=TIPO_DOCUMENTO_CHOICES, default="Cedula"
+    )
     numero_documento = models.CharField(max_length=50, primary_key=True)
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100, blank=True)
