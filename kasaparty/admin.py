@@ -86,9 +86,18 @@ class InventarioProveedorAdmin(InventarioBaseAdmin):
 class ProveedorAdmin(admin.ModelAdmin):
     list_display = ["nombre", "apellido", "telefono", "nombre_cuenta", "numero_cuenta"]
 
+class CotizacionAdmin(admin.ModelAdmin):
+    list_display = [ "cliente","evento", "fecha_cotizacion","fecha_evento","validez_dias","precio"]
+
+    def precio(self, obj):
+        # Utilizamos intcomma para formatear el número con punto de mil
+        return intcomma(obj.total)
+
+    precio.short_description = "Precio"
+
 
 admin.site.register(Cliente, ClienteAdmin)
-admin.site.register(Cotizacion)
+admin.site.register(Cotizacion, CotizacionAdmin)
 admin.site.register(Tematica)
 admin.site.register(Mpago)
 admin.site.register(Producto)
